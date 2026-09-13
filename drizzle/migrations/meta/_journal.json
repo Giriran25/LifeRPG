@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1789205991938,
+      "tag": "0000_life_rpg_core",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1789206000000,
+      "tag": "0001_strip_social",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1789206100000,
+      "tag": "0002_life_rpg_product",
+      "breakpoints": true
+    }
+  ]
+}
