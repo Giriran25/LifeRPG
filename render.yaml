@@ -1,0 +1,49 @@
+# Render Blueprint for Life RPG.
+#
+# This app is a TanStack Start / Nitro SSR application: auth, quest creation and
+# every data read go through server functions at /_serverFn/*, so it needs a
+# running Node process — a static host cannot serve it.
+#
+# The project's default Nitro target is `cloudflare-module`, which produces a
+# Worker bundle Render cannot execute. NITRO_PRESET below switches the build to
+# `node-server`, which emits .output/server/index.mjs and is what `npm run start`
+# runs. No application code depends on this; it is purely a build target.
+#
+# Secrets are never stored here. Every Supabase value is marked `sync: false`,
+# which tells Render to prompt for it in the dashboard and keep it out of git.
+services:
+  - type: web
+    name: liferpg
+    runtime: node
+    plan: free
+    branch: main
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
+    healthCheckPath: /
+    envVars:
+      # Build target — see note above.
+      - key: NITRO_PRESET
+        value: node-server
+
+      # Vite 8 requires Node 20.19+ / 22.12+.
+      - key: NODE_VERSION
+        value: "22.12.0"
+
+      # Publishable Supabase config. These are client-visible by design (the
+      # anon/publishable key is safe to ship; row-level security is what
+      # protects the data). They are read at BUILD time by Vite, so they must
+      # be set before the first deploy or the bundle ships without them.
+      - key: VITE_SUPABASE_URL
+        sync: false
+      - key: VITE_SUPABASE_PUBLISHABLE_KEY
+        sync: false
+      - key: VITE_SUPABASE_PROJECT_ID
+        sync: false
+
+      # Same values, read by the SSR/server-function side at runtime.
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_PUBLISHABLE_KEY
+        sync: false
+      - key: SUPABASE_PROJECT_ID
+        sync: false
